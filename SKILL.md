@@ -9,10 +9,34 @@ description: Personal knowledge base manager for LLM-Brain-Bases. Four modes: (1
 
 **Read the invocation context first:**
 
-- Invoked with argument `init`   → run **[INIT PROCEDURE]**
-- Invoked with argument `check`  → run **[CHECK PROCEDURE]**
-- Invoked with argument `replay` → run **[REPLAY PROCEDURE]**
-- Invoked without arguments (auto-save) → run **[AUTO-INIT CHECK]** then **[SAVE PROCEDURE]**
+- Invoked with argument `init`        → run **[INIT PROCEDURE]**
+- Invoked with argument `check`       → run **[CHECK PROCEDURE]**
+- Invoked with argument `replay`      → run **[REPLAY PROCEDURE]**
+- Invoked with argument `save`        → run **[AUTO-INIT CHECK]** then **[SAVE PROCEDURE]**
+- Invoked with argument `file <path>` → run **[FILE PROCEDURE]** with the given path
+- Invoked without arguments          → run **[MENU]**
+
+---
+
+## [MENU]
+
+Present the following menu to the user using the AskUserQuestion tool:
+
+```
+请选择操作：
+1. save   — 从当前对话提取知识并保存到知识库
+2. file   — 分析指定文件并提取知识（PDF / MD / txt）
+3. init   — 初始化知识库或更改路径
+4. check  — 健康检查，扫描断链和不一致
+5. replay — 回溯历史 session，补录遗漏的知识
+```
+
+Based on the user's selection, route to the corresponding procedure:
+- save   → **[AUTO-INIT CHECK]** then **[SAVE PROCEDURE]**
+- file   → **[FILE PROCEDURE]**
+- init   → **[INIT PROCEDURE]**
+- check  → **[CHECK PROCEDURE]**
+- replay → **[REPLAY PROCEDURE]**
 
 ---
 
@@ -418,12 +442,21 @@ Read KB path from `~/.claude/skills/save-to-kb/.config`.
 
 ### Step S-1: Extract Knowledge Points
 
-Review the full conversation. Identify knowledge points that are ALL THREE of:
-- **Reusable**: applicable beyond this specific task
-- **Non-obvious**: not general knowledge a competent engineer already knows
-- **Resolved**: confirmed working, or definitively ruled out
+Review the full conversation. A card must pass ALL of the following:
 
-**Judgment test**: Would an engineer joining this project benefit from reading this card before their next similar task? If yes, save it.
+- **Technical**: it solves a concrete technical problem — a bug, an API quirk, a non-obvious behavior, an integration constraint
+- **Non-obvious**: not general knowledge a competent engineer already knows
+- **Resolved**: the solution is confirmed working, or the failure path is definitively ruled out
+- **Transferable**: the next engineer (or AI) hitting the *same technical problem* would benefit — not just someone doing the same *kind of work*
+
+**Judgment test**: "Future AI encountered the same error or behavior — would this card let it solve the problem faster?" If yes, save it.
+
+**Hard rejections — do NOT save:**
+- AI/LLM collaboration methodology (handoff patterns, prompt strategies, multi-session workflow)
+- Process or documentation templates (how to write specs, how to structure a project)
+- Architectural decisions specific to this project that don't generalize
+- Best practices that are already mainstream (e.g., "add error handling", "write tests")
+- Anything that belongs in CLAUDE.md rather than a reusable knowledge card
 
 ### Step S-2: Check for Duplicates
 
@@ -542,3 +575,125 @@ Edit `$KB/Claude.md`:
 - Preferences already in CLAUDE.md
 - Pure reference facts (version numbers, general documentation)
 - Incomplete explorations with no resolved conclusions
+
+---
+
+## [FILE PROCEDURE]
+
+Extract reusable knowledge cards from a file (PDF, Markdown, txt, or any readable format).
+
+### Step F-1: Load Config
+
+Read KB path from `~/.claude/skills/save-to-kb/.config`.
+If missing → report "Not initialized. Run `save-to-kb init` first." and stop.
+
+### Step F-2: Get File Path
+
+If invoked from **menu selection**: ask the user with AskUserQuestion:
+> "请输入文件路径（支持 PDF / Markdown / txt）："
+
+If invoked with **argument** (`save-to-kb file <path>`): use the provided path directly.
+
+Expand `~` to the absolute home directory. Verify the file exists before proceeding.
+If file not found → report the resolved path and stop.
+
+### Step F-2b: Copy File to Knowledge Base
+
+Copy the source file into `{KB}/Sources/` to preserve a local reference:
+
+```bash
+mkdir -p "{KB}/Sources"
+cp "{source-path}" "{KB}/Sources/{filename}"
+```
+
+If the file already exists at the destination, skip copying (do not overwrite).
+Report: `Source file copied to: {KB}/Sources/{filename}`
+
+### Step F-3: Read File
+
+Use the Read tool to read the file.
+- For PDF: read all pages. If the PDF has more than 20 pages, read in batches of 20 pages.
+- For text/markdown: read the full file.
+
+### Step F-4: Extract Knowledge Points
+
+Analyze the file content. Apply the same filter as [SAVE PROCEDURE] Step S-1 — a card must be:
+
+- **Technical**: concrete technical knowledge — algorithms, data structures, system behaviors, API patterns, implementation techniques
+- **Non-obvious**: insight that a competent engineer couldn't trivially derive without reading this material
+- **Self-contained**: understandable without needing the full source document
+- **Transferable**: future AI or engineer encountering a related problem would benefit
+
+**Hard rejections** (same as SAVE PROCEDURE):
+- General methodology, process, or workflow descriptions
+- Knowledge already mainstream in the engineering community
+- Content specific to a single organization or proprietary system with no generalizable insight
+
+Before extracting, report a summary to the user:
+```
+File: {filename}
+Pages/size: {N} pages / {size}
+Candidate knowledge areas identified:
+  - {area 1}
+  - {area 2}
+  ...
+Proceed to extract cards? (yes/no)
+```
+
+### Step F-5: Check for Duplicates
+
+Same as [SAVE PROCEDURE] Step S-2 — check Claude.md and existing Cards before writing.
+
+### Step F-6: Write Cards
+
+Same format as [SAVE PROCEDURE] Step S-3.
+
+In the `sources:` field, reference the Base written in Step F-7 (use the slug you plan to write).
+
+### Step F-7: Write the Base
+
+Write one Base file at `$KB/Bases/{YYYY-MM-DD}-{file-slug}.md`.
+
+Use `session-id: file:{filename}` to distinguish file-sourced bases from session-sourced bases.
+Reference the local copy (`Sources/{filename}`) as the source, not the original path.
+
+```markdown
+---
+date: {YYYY-MM-DD}
+session-id: "file:{filename}"
+session-title: "{Brief description of file content}"
+slug: {YYYY-MM-DD}-{file-slug}
+project: "General"
+tech: [{tech1}]
+scenario: [{scenario1}]
+cards-created:
+  - "[[Cards/{slug}]]"
+cards-updated: []
+---
+
+## Source
+
+File: `[[Sources/{filename}]]`
+Original path: `{original-source-path}`
+{2–4 sentences describing what the file covers and why it was imported.}
+
+## Key Discoveries
+- {Discovery} — why it matters
+
+## Cards Written
+- [[Cards/{slug}]] — description
+```
+
+### Step F-8: Update Wiki and Master Index
+
+Same as [SAVE PROCEDURE] Steps S-5 and S-6.
+
+### Step F-9: Report
+
+```
+File analysis complete.
+  Source: {filename}
+  Cards created: {N}
+  Cards updated: {M}
+  Base written: {slug}
+```
