@@ -443,21 +443,39 @@ Read KB path from `~/.claude/skills/save-to-kb/.config`.
 
 ### Step S-1: Extract Knowledge Points
 
-Review the full conversation. A card must pass ALL of the following:
+Review the full conversation. A card must be **non-obvious** and **transferable** — meaning someone encountering a similar situation in the future would genuinely benefit from reading it.
 
-- **Technical**: it solves a concrete technical problem — a bug, an API quirk, a non-obvious behavior, an integration constraint
-- **Non-obvious**: not general knowledge a competent engineer already knows
-- **Resolved**: the solution is confirmed working, or the failure path is definitively ruled out
-- **Transferable**: the next engineer (or AI) hitting the *same technical problem* would benefit — not just someone doing the same *kind of work*
+Knowledge falls into these saveable categories:
 
-**Judgment test**: "Future AI encountered the same error or behavior — would this card let it solve the problem faster?" If yes, save it.
+**Technical**
+- A bug's non-obvious root cause and fix
+- Undocumented or surprising API / library behavior
+- Integration constraints between two systems or tools
+- Non-obvious performance characteristics
+
+**Architecture & Design**
+- A design decision with clear reasoning that generalizes beyond this project
+- A tradeoff conclusion worth remembering (why X was chosen over Y)
+
+**Product & Requirements**
+- A non-obvious insight about user behavior or intent revealed during development
+- A requirement that turned out to mean something different than assumed — and why
+- A product decision pattern that resolved ambiguity in a generalizable way
+
+**AI & Vibe Coding**
+- Non-obvious Claude / LLM behavior (prompt patterns, context limits, model quirks)
+- Effective Skill, Hook, or tool configuration patterns for Claude Code
+- Vibe coding workflow patterns that meaningfully improve AI-assisted development
+- Lessons from AI agent coordination (task splitting, context management, handoff)
 
 **Hard rejections — do NOT save:**
-- AI/LLM collaboration methodology (handoff patterns, prompt strategies, multi-session workflow)
-- Process or documentation templates (how to write specs, how to structure a project)
-- Architectural decisions specific to this project that don't generalize
-- Best practices that are already mainstream (e.g., "add error handling", "write tests")
-- Anything that belongs in CLAUDE.md rather than a reusable knowledge card
+- Generic process templates or documentation structures
+- Decisions or bugs entirely specific to one project with zero generalizable signal
+- Mainstream best practices any competent engineer already knows
+- Anything that belongs in CLAUDE.md rather than a reusable card
+- Unresolved explorations with no confirmed conclusion
+
+**Judgment test**: "Would someone hitting a similar situation in the future — whether a bug, a decision, a product question, or an AI interaction — be better equipped after reading this card?" If yes, save it.
 
 ### Step S-2: Check for Duplicates
 
@@ -618,17 +636,7 @@ Use the Read tool to read the file.
 
 ### Step F-4: Extract Knowledge Points
 
-Analyze the file content. Apply the same filter as [SAVE PROCEDURE] Step S-1 — a card must be:
-
-- **Technical**: concrete technical knowledge — algorithms, data structures, system behaviors, API patterns, implementation techniques
-- **Non-obvious**: insight that a competent engineer couldn't trivially derive without reading this material
-- **Self-contained**: understandable without needing the full source document
-- **Transferable**: future AI or engineer encountering a related problem would benefit
-
-**Hard rejections** (same as SAVE PROCEDURE):
-- General methodology, process, or workflow descriptions
-- Knowledge already mainstream in the engineering community
-- Content specific to a single organization or proprietary system with no generalizable insight
+Analyze the file content. Apply the same filter as [SAVE PROCEDURE] Step S-1 — same categories (Technical, Architecture & Design, Product & Requirements, AI & Vibe Coding), same hard rejections, same judgment test.
 
 Before extracting, report a summary to the user:
 ```
