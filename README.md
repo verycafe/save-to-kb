@@ -1,5 +1,9 @@
 # save-to-kb
 
+[![license](https://img.shields.io/badge/license-MIT-b0e8ff?style=flat-square&labelColor=0a0e14)](./LICENSE)
+[![platform](https://img.shields.io/badge/Claude_Code-Skill-d4a8ff?style=flat-square&labelColor=0a0e14)](https://github.com/anthropics/claude-code)
+[![obsidian](https://img.shields.io/badge/Obsidian-compatible-7c3aed?style=flat-square&labelColor=0a0e14)](https://obsidian.md)
+
 > 中文文档：[README.zh.md](./README.zh.md)
 
 A Claude Code skill that extracts reusable knowledge from your conversations and files into a structured Obsidian knowledge base.

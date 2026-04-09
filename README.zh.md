@@ -1,5 +1,9 @@
 # save-to-kb
 
+[![license](https://img.shields.io/badge/license-MIT-b0e8ff?style=flat-square&labelColor=0a0e14)](./LICENSE)
+[![platform](https://img.shields.io/badge/Claude_Code-Skill-d4a8ff?style=flat-square&labelColor=0a0e14)](https://github.com/anthropics/claude-code)
+[![obsidian](https://img.shields.io/badge/Obsidian-compatible-7c3aed?style=flat-square&labelColor=0a0e14)](https://obsidian.md)
+
 > English docs: [README.md](./README.md)
 
 从 Claude 对话和文件中提取可复用的知识，自动整理到结构化的 Obsidian 知识库。
