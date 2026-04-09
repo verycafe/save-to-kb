@@ -1,5 +1,13 @@
 # save-to-kb
 
+<p align="center">
+  <img src="./assets/cover.jpeg" alt="save-to-kb" width="600">
+</p>
+
+<p align="center">
+  <a href="./README.md">English Docs</a>
+</p>
+
 [![license](https://img.shields.io/badge/license-MIT-b0e8ff?style=flat-square&labelColor=0a0e14)](./LICENSE)
 [![platform](https://img.shields.io/badge/Claude_Code-Skill-d4a8ff?style=flat-square&labelColor=0a0e14)](https://github.com/anthropics/claude-code)
 [![obsidian](https://img.shields.io/badge/Obsidian-compatible-7c3aed?style=flat-square&labelColor=0a0e14)](https://obsidian.md)
