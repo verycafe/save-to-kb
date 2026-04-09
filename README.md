@@ -11,11 +11,7 @@ A Claude Code skill that extracts reusable knowledge from your conversations and
 ## Install
 
 ```bash
-mkdir -p ~/.claude/skills/save-to-kb/references
-curl -o ~/.claude/skills/save-to-kb/SKILL.md \
-  https://raw.githubusercontent.com/verycafe/save-to-kb/main/SKILL.md
-curl -o ~/.claude/skills/save-to-kb/references/wiki-template.md \
-  https://raw.githubusercontent.com/verycafe/save-to-kb/main/references/wiki-template.md
+curl -fsSL https://raw.githubusercontent.com/verycafe/save-to-kb/main/install.sh | bash
 ```
 
 Then run `/save-to-kb` and select **init** to set up your knowledge base.
