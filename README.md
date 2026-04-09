@@ -1,6 +1,8 @@
 # save-to-kb
 
-A Claude Code skill that extracts reusable technical knowledge from your conversations and files into a structured Obsidian knowledge base.
+> 中文文档：[README.zh.md](./README.zh.md)
+
+A Claude Code skill that extracts reusable knowledge from your conversations and files into a structured Obsidian knowledge base.
 
 ## Install
 
@@ -16,23 +18,29 @@ Then run `/save-to-kb` and select **init** to set up your knowledge base.
 
 ## Usage
 
-Type `/save-to-kb` — a menu appears:
+Type `/save-to-kb` — a two-level menu appears:
 
 | Option | What it does |
 |--------|-------------|
 | `save` | Extract knowledge from the current conversation |
 | `file` | Analyze a file (PDF / Markdown / txt) and extract cards |
-| `init` | Set up or reconfigure the knowledge base path |
 | `check` | Health-check: scan for broken links and inconsistencies |
-| `replay` | Retroactively process past sessions that were never saved |
+| `管理知识库…` | Open submenu → `init` / `replay` |
 
 You can also call modes directly: `/save-to-kb check`, `/save-to-kb init`, etc.
 
 ## What gets saved
 
-Cards must be **technical**, **non-obvious**, **resolved**, and **transferable** — meaning a future engineer or AI hitting the same problem would benefit from reading it.
+A card must be **non-obvious** and **transferable** — someone hitting a similar situation in the future would genuinely benefit. Four categories qualify:
 
-**Not saved:** AI workflow methodology, process templates, project-specific decisions, mainstream best practices.
+| Category | Examples |
+|----------|---------|
+| **Technical** | Bug root causes, undocumented API behavior, integration constraints, performance quirks |
+| **Architecture & Design** | Design decisions with clear reasoning, tradeoff conclusions |
+| **Product & Requirements** | Non-obvious user behavior insights, requirement misread lessons, product decision patterns |
+| **AI & Vibe Coding** | Claude/LLM behavioral quirks, effective Skill/Hook patterns, AI-assisted development workflows |
+
+**Not saved:** generic process templates, project-specific decisions with no generalizable signal, mainstream best practices, unresolved explorations.
 
 ## Knowledge base structure
 
@@ -54,9 +62,12 @@ LLM-Brain-Bases/
 
 ## Auto-save behavior
 
-After significant conversations, Claude automatically calls this skill when the session produces:
-- A non-obvious root cause for a bug
+Claude automatically triggers this skill at the end of conversations that produce:
+
+- A non-obvious bug root cause
 - Undocumented API or library behavior
-- An architecture decision with clear reasoning
-- A workflow pattern that makes repeated tasks faster
+- An architecture or design decision with clear reasoning
+- A product insight revealing non-obvious user behavior or requirements
+- An AI/LLM behavioral pattern worth remembering
+- A vibe coding workflow that meaningfully improves AI-assisted development
 - A confirmed failure path worth avoiding
