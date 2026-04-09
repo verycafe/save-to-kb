@@ -20,22 +20,23 @@ description: Personal knowledge base manager for LLM-Brain-Bases. Four modes: (1
 
 ## [MENU]
 
-Present the following menu to the user using the AskUserQuestion tool:
+Present a **two-level menu** using AskUserQuestion (max 4 options per question).
 
-```
-请选择操作：
-1. save   — 从当前对话提取知识并保存到知识库
-2. file   — 分析指定文件并提取知识（PDF / MD / txt）
-3. init   — 初始化知识库或更改路径
-4. check  — 健康检查，扫描断链和不一致
-5. replay — 回溯历史 session，补录遗漏的知识
-```
+**Level 1** — main actions:
+- save   — 从当前对话提取知识并保存到知识库
+- file   — 分析指定文件并提取知识（PDF / MD / txt）
+- check  — 健康检查，扫描断链和不一致
+- 管理知识库… — 进入二级菜单（init / replay）
 
-Based on the user's selection, route to the corresponding procedure:
+If user selects "管理知识库…", show **Level 2**:
+- init   — 初始化知识库或更改路径
+- replay — 回溯历史 session，补录遗漏的知识
+
+Route based on final selection:
 - save   → **[AUTO-INIT CHECK]** then **[SAVE PROCEDURE]**
 - file   → **[FILE PROCEDURE]**
-- init   → **[INIT PROCEDURE]**
 - check  → **[CHECK PROCEDURE]**
+- init   → **[INIT PROCEDURE]**
 - replay → **[REPLAY PROCEDURE]**
 
 ---
